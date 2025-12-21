@@ -20,14 +20,16 @@
             border-radius:8px;
         }
 
-        .gallery img {
-            width:200px; height:140px; margin:8px;
-            border:1px solid black; border-radius:6px;
-        }
-
         form input, form textarea {
             width:100%; padding:10px; margin-bottom:15px;
             border-radius:4px; border:1px solid black;
+        }
+
+        #topicImages img {
+            width:260px;
+            margin:10px;
+            border:1px solid black;
+            border-radius:8px;
         }
     </style>
 </head>
@@ -35,7 +37,7 @@
 
 <!-- LANDING PAGE -->
 <main id="landing">
-    <h1>SolarLearn Academy</h1>
+    <h1>Solar System and Eclipse</h1>
     <p>Learn the Solar System and Eclipses interactively.</p>
 
     <button class="btn" onclick="showPage('login')">Login</button>
@@ -57,6 +59,8 @@
     </form>
 
     <button class="btn" onclick="forgotPassword()">Forgot Password?</button>
+    <br><br>
+    <button class="btn" onclick="showPage('landing')">Back</button>
 </main>
 
 <!-- REGISTRATION PAGE -->
@@ -74,15 +78,9 @@
 
         <button class="btn">Register</button>
     </form>
-</main>
 
-<!-- OTP PAGE -->
-<main id="otpSection" style="display:none;">
-    <h1>Email OTP Verification</h1>
-    <p><b>Your OTP:</b> <span id="displayOTP"></span></p>
-
-    <input type="text" id="userOTP" placeholder="Enter OTP" required>
-    <button class="btn" onclick="verifyOTP()">Verify OTP</button>
+    <br>
+    <button class="btn" onclick="showPage('landing')">Back</button>
 </main>
 
 <!-- NAVBAR -->
@@ -98,33 +96,55 @@
 
 <!-- HOME PAGE -->
 <main id="home" style="display:none;">
-    <h1>Solar System & Eclipses</h1>
+ <h1>Solar System & Eclipses</h1>
+
+    <p>
+        The Solar System consists of the Sun, planets, moons, asteroids, and comets.
+    </p>
+
+    <hr>
 
     <h2>The Solar System</h2>
+
     <p>
-        The Solar System contains the Sun, planets, moons, asteroids, comets, and dwarf planets.
-        The Sun provides heat and energy to all planets and controls their motion using gravity.
+        The Sun is a star at the center of our Solar System, around which eight planets
+        revolve. These planets include Mercury, Venus, Earth, Mars, Jupiter, Saturn,
+        Uranus, and Neptune. In addition to the planets, our Solar System is home to
+        various moons, asteroids, comets, and dwarf planets.
     </p>
 
-    <h2>Eclipses</h2>
+    <p>Explore more topics:</p>
+
+    <ul>
+        <li>Planets</li>
+        <li>Moons</li>
+        <li>Asteroids</li>
+        <li>Comets</li>
+    </ul>
+
+    <p><b>Eclipses</b></p>
+
+    <ul>
+        <li>Solar Eclipses</li>
+        <li>Lunar Eclipses</li>
+        <li>Eclipse Cycles</li>
+    </ul>
+
     <p>
-        Eclipses occur when a celestial body moves into the shadow of another.
-        Solar eclipses occur during New Moon, while lunar eclipses occur during Full Moon.
+        Dive into the fascinating world of the Solar System and learn about the wonders
+        of eclipses. Take quizzes to test your knowledge!
     </p>
+
 </main>
 
 <!-- LEARNING PAGE -->
 <main id="course" style="display:none;">
-    <h2>Planet Slideshow</h2>
-    <div id="slideshow">
-        <img id="slideImg" src="planet1.jpg">
-        <br>
-        <button class="btn" onclick="prevSlide()">Previous</button>
-        <button class="btn" onclick="nextSlide()">Next</button>
-    </div>
+    <h1>Learn about the Solar System & Eclipses</h1>
+<p> Explore and learn about the fascinating Solar System and eclipses interactively. Select a topic below to get started.</p>
+      <!-- Topic Selection Dropdown -->
 
-    <br><h2>Learn by Topic</h2>
-    <select class="btn" onchange="showDropdown(this.value)">
+
+    <select class="btn" onchange="openTopic(this.value)">
         <option value="">Select Topic</option>
         <option value="planets">Planets</option>
         <option value="solar">Solar Eclipse</option>
@@ -135,130 +155,130 @@
         <option value="missions">Space Missions</option>
         <option value="blackholes">Black Holes</option>
     </select>
-
-    <div id="contentArea"><p>Select a topic.</p></div>
-
-    <h2>Audio Explanation</h2>
-
-    <button class="btn" onclick="playAudio('audio1')">Play Solar Audio</button>
-    <button class="btn" onclick="stopAudio('audio1')">Stop Solar Audio</button>
-
-    <br><br>
-
-    <button class="btn" onclick="playAudio('audio2')">Play Eclipse Audio</button>
-    <button class="btn" onclick="stopAudio('audio2')">Stop Eclipse Audio</button>
-
-    <audio id="audio1" src="solar.mp3"></audio>
-    <audio id="audio2" src="eclipse.mp3"></audio>
-
-    <h2>Image Gallery</h2>
-    <div class="gallery">
-        <img src="mercury.jpg">
-        <img src="mars.jpg">
-        <img src="jupiter.jpg">
-        <img src="earth.jpg">
+    
+    <!-- Slideshow on right -->
+    <div style="float:right; margin-left:30px;">
+        <div id="slideshow">
+            <img id="slideImg" src="neptune.jpg">
+        </div>
     </div>
+
+    <!-- planet1 image -->
+    <img src="planet1.jpg"
+         style="width:350px; height:240px; border:1px solid black;
+                border-radius:8px; display:block; margin-bottom:15px;">
+  
+</main>
+
+<!-- TOPIC DETAILS PAGE -->
+<main id="topicPage" style="display:none;">
+    <h1 id="topicTitle"></h1>
+    <p id="topicText"></p>
+    <div id="topicImages"></div>
+    <br>
+    <button class="btn" onclick="showPage('course')">Back to Learning</button>
 </main>
 
 <!-- QUIZ PAGE -->
+<!-- ASSESSMENT PAGE -->
 <main id="assessment" style="display:none;">
-    <h1>Solar System & Eclipse Quiz</h1>
+    <h1>Assessment</h1>
 
-    <form onsubmit="evaluateQuiz(event)">
+    <form onsubmit="submitQuiz(event)">
 
-        <p><b>1. Center of our Solar System is:</b></p>
-        <input type="radio" name="q1" value="sun"> Sun
-        <input type="radio" name="q1" value="moon"> Moon
+        <p><b>1. Which is the center of the Solar System?</b></p>
+        <input type="radio" name="q1" value="Sun" required> Sun<br>
+        <input type="radio" name="q1" value="Earth"> Earth<br>
+        <input type="radio" name="q1" value="Moon"> Moon<br><br>
 
-        <p><b>2. Solar eclipse happens when:</b></p>
-        <input type="radio" name="q2" value="moon"> Moon blocks sunlight
-        <input type="radio" name="q2" value="earth"> Earth blocks sunlight
+        <p><b>2. Which planet is known as the Red Planet?</b></p>
+        <input type="radio" name="q2" value="Mars" required> Mars<br>
+        <input type="radio" name="q2" value="Venus"> Venus<br>
+        <input type="radio" name="q2" value="Jupiter"> Jupiter<br><br>
 
-        <p><b>3. Lunar eclipse happens when:</b></p>
-        <input type="radio" name="q3" value="earth"> Earth’s shadow covers the Moon
-        <input type="radio" name="q3" value="sun"> Sun casts shadow on Earth
+        <p><b>3. How many planets are there in the Solar System?</b></p>
+        <input type="radio" name="q3" value="8" required> 8<br>
+        <input type="radio" name="q3" value="7"> 7<br>
+        <input type="radio" name="q3" value="9"> 9<br><br>
 
-        <p><b>4. Largest planet in Solar System is:</b></p>
-        <input type="radio" name="q4" value="jupiter"> Jupiter
-        <input type="radio" name="q4" value="mars"> Mars
+        <p><b>4. Which planet has rings?</b></p>
+        <input type="radio" name="q4" value="Saturn" required> Saturn<br>
+        <input type="radio" name="q4" value="Earth"> Earth<br>
+        <input type="radio" name="q4" value="Mars"> Mars<br><br>
 
-        <p><b>5. The galaxy we live in is called:</b></p>
-        <input type="radio" name="q5" value="milkyway"> Milky Way
-        <input type="radio" name="q5" value="andromeda"> Andromeda
+        <p><b>5. Which is the largest planet?</b></p>
+        <input type="radio" name="q5" value="Jupiter" required> Jupiter<br>
+        <input type="radio" name="q5" value="Saturn"> Saturn<br>
+        <input type="radio" name="q5" value="Earth"> Earth<br><br>
 
-        <p><b>6. Asteroids mostly exist between:</b></p>
-        <input type="radio" name="q6" value="mj"> Mars and Jupiter
-        <input type="radio" name="q6" value="ev"> Earth and Venus
+        <p><b>6. A solar eclipse occurs when:</b></p>
+        <input type="radio" name="q6" value="Moon" required> Moon comes between Sun and Earth<br>
+        <input type="radio" name="q6" value="Earth"> Earth comes between Sun and Moon<br>
+        <input type="radio" name="q6" value="Sun"> Sun comes between Earth and Moon<br><br>
 
-        <p><b>7. A comet has:</b></p>
-        <input type="radio" name="q7" value="tail"> A glowing tail near Sun
-        <input type="radio" name="q7" value="none"> No tail
+        <p><b>7. A lunar eclipse occurs when:</b></p>
+        <input type="radio" name="q7" value="Earth" required> Earth comes between Sun and Moon<br>
+        <input type="radio" name="q7" value="Moon"> Moon comes between Sun and Earth<br>
+        <input type="radio" name="q7" value="Sun"> Sun comes between Earth and Moon<br><br>
 
-        <br><br>
-        <button class="btn">Submit Quiz</button>
+        <p><b>8. Which planet supports life?</b></p>
+        <input type="radio" name="q8" value="Earth" required> Earth<br>
+        <input type="radio" name="q8" value="Mars"> Mars<br>
+        <input type="radio" name="q8" value="Venus"> Venus<br><br>
+
+        <p><b>9. Which celestial body produces its own light?</b></p>
+        <input type="radio" name="q9" value="Sun" required> Sun<br>
+        <input type="radio" name="q9" value="Moon"> Moon<br>
+        <input type="radio" name="q9" value="Earth"> Earth<br><br>
+
+        <p><b>10. What do planets move around?</b></p>
+        <input type="radio" name="q10" value="Sun" required> Sun<br>
+        <input type="radio" name="q10" value="Moon"> Moon<br>
+        <input type="radio" name="q10" value="Stars"> Stars<br><br>
+
+        <button class="btn">Submit Assessment</button>
     </form>
-
-    <h2 id="quizResult"></h2>
 </main>
+
+<!-- RESULT PAGE -->
+<main id="result" style="display:none;">
+    <h1>Assessment Result</h1>
+    <p id="resultText"></p>
+    <button class="btn" onclick="showPage('home')">Go to Home</button>
+</main>
+
 
 <!-- FEEDBACK PAGE -->
 <main id="feedback" style="display:none;">
-    <h1>Feedback & Contact</h1>
+    <h1>Feedback</h1>
     <form onsubmit="submitFeedback(event)">
-        <input id="fbName" placeholder="Your Name" required>
-        <textarea id="fbMessage" placeholder="Your Feedback" required></textarea>
+        <input placeholder="Your Name" required>
+        <textarea placeholder="Your Feedback" required></textarea>
         <button class="btn">Send</button>
     </form>
 </main>
 
 <script>
-/*** PAGE SHOW + STOP AUDIO ***/
 function showPage(id){
-    document.querySelectorAll("audio").forEach(a=>{
-        a.pause();
-        a.currentTime=0;
-    });
     document.querySelectorAll("main,header").forEach(x=>x.style.display="none");
-    if(["home","course","assessment","feedback"].includes(id))
+    if(["home","course","assessment","feedback","topicPage"].includes(id))
         document.getElementById("topnav").style.display="block";
     document.getElementById(id).style.display="block";
 }
 
-/*** REGISTRATION & OTP ***/
-let systemOTP="";
 function startRegistration(e){
     e.preventDefault();
-    localStorage.setItem("TEMP_Email", document.getElementById("regEmail").value);
-    localStorage.setItem("TEMP_User", document.getElementById("regUser").value);
-    localStorage.setItem("TEMP_Pass", document.getElementById("regPass").value);
-    systemOTP = Math.floor(100000 + Math.random()*900000);
-    document.getElementById("displayOTP").innerText = systemOTP;
-    showPageSection("otpSection");
+    localStorage.setItem("SolarUser", regUser.value);
+    localStorage.setItem("SolarPass", regPass.value);
+    alert("Registration Successful!");
+    showPage("login");
 }
 
-function verifyOTP(){
-    if(document.getElementById("userOTP").value == systemOTP){
-        localStorage.setItem("SolarEmail", localStorage.getItem("TEMP_Email"));
-        localStorage.setItem("SolarUser", localStorage.getItem("TEMP_User"));
-        localStorage.setItem("SolarPass", localStorage.getItem("TEMP_Pass"));
-        alert("OTP Verified — Registration Successful!");
-        showPage("login");
-    }
-    else alert("Incorrect OTP!");
-}
-
-function showPageSection(id){
-    document.querySelectorAll("main").forEach(x=>x.style.display="none");
-    document.getElementById(id).style.display="block";
-}
-
-/*** LOGIN ***/
 function loginUser(e){
     e.preventDefault();
-    if(
-        document.getElementById("unameLogin").value===localStorage.getItem("SolarUser") &&
-        document.getElementById("pwdLogin").value===localStorage.getItem("SolarPass")
-    ){ showPage("home"); }
+    if(unameLogin.value===localStorage.getItem("SolarUser") &&
+       pwdLogin.value===localStorage.getItem("SolarPass"))
+        showPage("home");
     else alert("Invalid Login!");
 }
 
@@ -269,71 +289,181 @@ function forgotPassword(){
 
 function logoutUser(){ showPage("landing"); }
 
-/*** PASSWORD TOGGLE ***/
-function toggleLoginPass(){
-    let p=document.getElementById("pwdLogin");
-    p.type=p.type==="password"?"text":"password";
+function toggleLoginPass(){ pwdLogin.type = pwdLogin.type==="password"?"text":"password"; }
+function toggleRegPass(){ regPass.type = regPass.type==="password"?"text":"password"; }
+
+var slides = [
+    "neptune.jpg",
+    "saturn.jpg",
+    "uranus.jpg",
+    "venus.jpg",
+    "mars.jpg",
+    "jupiter.jpg",
+    "earth.jpg"
+];
+
+var index = 0;
+function nextSlide(){
+    index = (index + 1) % slides.length;
+    slideImg.src = slides[index];
 }
-function toggleRegPass(){
-    let p=document.getElementById("regPass");
-    p.type=p.type==="password"?"text":"password";
+setInterval(nextSlide, 3000);
+
+function openTopic(topic){
+    if(!topic) return;
+
+    showPage("topicPage");
+
+    let data = {
+        planets: [
+            "Planets",
+            "<b>What are Planets?</b><br><br>\
+Planets are large celestial bodies that revolve around the Sun in fixed orbits. \
+They do not emit their own light but reflect sunlight. \
+Each planet differs in size, atmosphere, and surface conditions, making them unique.<br><br>\
+<b>Main Types of Planets:</b>\
+<ul>\
+<li>Rocky Planets – Mercury, Venus, Earth, Mars</li>\
+<li>Gas Giants – Jupiter, Saturn</li>\
+<li>Ice Giants – Uranus, Neptune</li>\
+</ul>\
+<b>Example:</b> Earth supports life, while Jupiter is the largest planet.",
+            "<img src='earth.jpg'><img src='mars.jpg'>"
+        ],
+
+        solar: [
+            "Solar Eclipse",
+            "<b>Solar Eclipse Explained</b><br><br>\
+A solar eclipse occurs when the Moon blocks sunlight by coming between the Sun and Earth. \
+It happens only during a New Moon and is visible from limited regions.<br><br>\
+<b>Types:</b>\
+<ul>\
+<li>Total</li>\
+<li>Partial</li>\
+<li>Annular</li>\
+</ul>\
+<b>Example:</b> The 2017 total solar eclipse in the USA.",
+            "<img src='solareclipse.jpg'><img src='solareclipse_diagram.png'>"
+        ],
+
+        lunar: [
+            "Lunar Eclipse",
+            "<b>Lunar Eclipse Explained</b><br><br>\
+A lunar eclipse occurs when Earth’s shadow falls on the Moon during a Full Moon. \
+The Moon may appear red, known as a Blood Moon.<br><br>\
+<b>Types:</b>\
+<ul>\
+<li>Total</li>\
+<li>Partial</li>\
+<li>Penumbral</li>\
+</ul>\
+<b>Example:</b> Blood Moon eclipses observed worldwide.",
+            "<img src='lunareclipse.jpg'><img src='lunareclipse_diagram.png'>"
+        ],
+
+        galaxies: [
+            "Galaxies",
+            "<b>What are Galaxies?</b><br><br>\
+Galaxies contain billions of stars, planets, gas, and dust. \
+Our Solar System lies in the Milky Way galaxy.<br><br>\
+<b>Types:</b>\
+<ul>\
+<li>Spiral</li>\
+<li>Elliptical</li>\
+<li>Irregular</li>\
+</ul>\
+<b>Example:</b> Milky Way is a spiral galaxy.",
+            ""
+        ],
+
+        asteroids: [
+            "Asteroids",
+            "<b>Asteroids Explained</b><br><br>\
+Asteroids are rocky objects found mainly between Mars and Jupiter. \
+They are leftovers from early Solar System formation.<br><br>\
+<b>Facts:</b>\
+<ul>\
+<li>No atmosphere</li>\
+<li>Irregular shape</li>\
+<li>Some are near Earth</li>\
+</ul>\
+<b>Example:</b> Asteroid Bennu.",
+            ""
+        ],
+
+        comets: [
+            "Comets",
+            "<b>Comets Explained</b><br><br>\
+Comets are icy bodies with long elliptical orbits. \
+When close to the Sun, they form glowing tails.<br><br>\
+<b>Parts:</b>\
+<ul>\
+<li>Nucleus</li>\
+<li>Coma</li>\
+<li>Tail</li>\
+</ul>\
+<b>Example:</b> Halley’s Comet.",
+            ""
+        ],
+
+        missions: [
+            "Space Missions",
+            "<b>Space Missions</b><br><br>\
+Space missions explore planets and deep space using probes and rovers.<br><br>\
+<b>Examples:</b>\
+<ul>\
+<li>Chandrayaan</li>\
+<li>Mars Rover</li>\
+<li>Voyager</li>\
+</ul>\
+<b>Example:</b> Chandrayaan-3 Moon landing.",
+            ""
+        ],
+
+        blackholes: [
+            "Black Holes",
+            "<b>Black Holes Explained</b><br><br>\
+Black holes have extremely strong gravity where even light cannot escape.<br><br>\
+<b>Types:</b>\
+<ul>\
+<li>Stellar</li>\
+<li>Supermassive</li>\
+<li>Intermediate</li>\
+</ul>\
+<b>Example:</b> Black hole at Milky Way’s center.",
+            ""
+        ]
+    };
+
+    topicTitle.innerHTML = data[topic][0];
+    topicText.innerHTML = data[topic][1];
+    topicImages.innerHTML = data[topic][2];
 }
 
-/*** SLIDESHOW ***/
-var slides=["neptune.jpg","saturn.jpg","uranus.jpg","venus.jpg"];
-var index=0;
-function nextSlide(){ index=(index+1)%slides.length; document.getElementById("slideImg").src=slides[index]; }
-function prevSlide(){ index=(index-1+slides.length)%slides.length; document.getElementById("slideImg").src=slides[index]; }
-setInterval(nextSlide,5000);
-
-/*** TOPIC LEARNING — unchanged ***/
-function showDropdown(topic){
-    let area=document.getElementById("contentArea");
-    let text="";
-    if(topic==="planets"){ text=`<h3>Planets</h3>Planets revolve around the Sun.`; }
-    if(topic==="solar"){ text=`<h3>Solar Eclipse</h3>Moon blocks sunlight.`; }
-    if(topic==="lunar"){ text=`<h3>Lunar Eclipse</h3>Earth’s shadow covers Moon.`; }
-    if(topic==="galaxies"){ text=`<h3>Galaxies</h3>We live in Milky Way.`; }
-    if(topic==="asteroids"){ text=`<h3>Asteroids</h3>Rocky objects.`; }
-    if(topic==="comets"){ text=`<h3>Comets</h3>Icy bodies with tail.`; }
-    if(topic==="missions"){ text=`<h3>Space Missions</h3>Exploration.`; }
-    if(topic==="blackholes"){ text=`<h3>Black Holes</h3>Super gravity.`; }
-    if(topic==="") text=`<p>Select a topic.</p>`;
-    area.innerHTML=text;
-}
-
-/*** AUDIO ***/
-function playAudio(id){ document.getElementById(id).play(); }
-function stopAudio(id){
-    let a=document.getElementById(id);
-    a.pause(); a.currentTime=0;
-}
-
-/*** QUIZ — SHOW ANSWERS ***/
-function evaluateQuiz(e){
+function submitQuiz(e){
     e.preventDefault();
-    let score=0;
-    let result="<h3>Quiz Results:</h3>";
 
-    function check(q,correct,explain){
-        let ans=document.querySelector('input[name="'+q+'"]:checked')?.value;
-        if(ans===correct){ score++; result+=`✔ Correct — ${explain}<br>`; }
-        else result+=`✘ Wrong — ${explain}<br>`;
+    let correct = {
+        q1:"Sun", q2:"Mars", q3:"8", q4:"Saturn", q5:"Jupiter",
+        q6:"Moon", q7:"Earth", q8:"Earth", q9:"Sun", q10:"Sun"
+    };
+
+    let score = 0;
+    for(let q in correct){
+        if(document.querySelector(`input[name="${q}"]:checked`).value === correct[q]){
+            score++;
+        }
     }
 
-    check("q1","sun","Sun is the center of Solar System");
-    check("q2","moon","Moon blocks sunlight in Solar Eclipse");
-    check("q3","earth","Earth’s shadow covers Moon in Lunar Eclipse");
-    check("q4","jupiter","Jupiter is largest planet");
-    check("q5","milkyway","We live in Milky Way Galaxy");
-    check("q6","mj","Asteroids lie between Mars & Jupiter");
-    check("q7","tail","Comets have glowing tail near Sun");
+    document.getElementById("resultText").innerHTML =
+        "Total Questions: 10<br>" +
+        "Correct Answers: " + score + "<br>" +
+        "Result: " + (score >= 5 ? "PASS ✅" : "FAIL ❌");
 
-    result+=`<br><b>Total Score = ${score}/7</b>`;
-    document.getElementById("quizResult").innerHTML=result;
+    showPage("result");
 }
 
-/*** FEEDBACK ***/
+
 function submitFeedback(e){
     e.preventDefault();
     alert("Thank you for your feedback!");
