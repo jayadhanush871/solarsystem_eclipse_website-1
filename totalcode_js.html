@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Solar System Eclipse Portal</title>
+<style>
+/* --- ALL ORIGINAL STYLES KEPT EXACTLY AS GIVEN --- */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('space_background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+}
+.app {
+  min-height: 100vh;
+  background: rgba(0,0,0,0.7);
+}
+.full-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.auth-card {
+  background: rgba(0,0,0,0.75);
+  padding: 22px 18px;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 10px;
+  box-shadow: 0 0 16px rgba(0,0,0,0.7);
+  text-align: center;
+}
+.auth-card h2 { margin: 0 0 8px; font-size: 24px; color: #e6e6ff; }
+.auth-card p { font-size: 13px; color: #d0d2ff; margin-bottom: 16px; }
+.auth-input, .auth-select, .auth-textarea {
+  width: 100%; padding: 8px 10px; margin-bottom: 10px; border-radius: 6px;
+  border: 1px solid #444b80; background: rgba(10,12,30,0.9); color: #ffffff;
+  font-size: 14px; box-sizing: border-box;
+}
+
+/* FIX: WHITE DOB ICON */
+input[type="date"] { color-scheme: white; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+.auth-textarea { min-height: 50px; resize: vertical; }
+.auth-btn, .primary-btn {
+  width: 100%; padding: 10px 0; border-radius: 6px; border: none;
+  background: linear-gradient(45deg,#3344ff,#6678ff); color: #ffffff;
+  font-size: 15px; cursor: pointer; margin-top: 10px;
+}
+.link-btn { margin-top: 12px; font-size: 13px; color: #b9bcff; cursor: pointer; text-decoration: underline; }
+.field-group { display: flex; gap: 10px; }
+
+header { background: rgba(0,0,0,0.9); border-bottom: 2px solid #3366ff; backdrop-filter: blur(6px); }
+.top-bar { max-width: 1100px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-size: 22px; font-weight: bold; color: #e6e6ff; }
+.nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #4455ff; background: #1a2140; color: #ffffff; font-size: 13px; cursor: pointer; text-decoration: none; }
+.nav-btn.active { background: linear-gradient(45deg,#3344ff,#6678ff) !important; }
+.logout-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #ff7777; background: #802525; color: #ffffff; font-size: 13px; cursor: pointer; }
+
+.container { max-width: 1100px; margin: 20px auto; padding: 0 16px 40px; }
+.section-title { font-size: 22px; margin-bottom: 12px; border-bottom: 2px solid #4b5bd6; width: fit-content; padding-bottom: 5px; color: #e6e6ff; }
+.section-text { font-size: 16px; color: #e1e3ff; line-height: 1.5; margin-bottom: 15px; }
+
+.form-card { background: rgba(0,0,0,0.45); padding: 16px; border-radius: 8px; backdrop-filter: blur(4px); max-width: 600px; }
+.form-row { margin-bottom: 10px; }
+.form-label { display: block; margin-bottom: 4px; font-size: 14px; color: #e6e6ff; }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #444b80; background: rgba(10,12,30,0.9); color: #ffffff; font-size: 14px; box-sizing: border-box; }
+#success-msg { margin-top: 15px; padding: 10px; background: rgba(124, 245, 124, 0.2); border: 1px solid #7cf57c; border-radius: 6px; color: #7cf57c; display: none; }
+
+.planet-layout { display: grid; grid-template-columns: 1.2fr 2fr; gap: 20px; }
+.planet-list { background: rgba(0,0,0,0.45); padding: 10px; border-radius: 8px; backdrop-filter: blur(4px); }
+.planet-button { width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 6px; border-radius: 6px; border: 1px solid #303858; background: rgba(20,25,50,0.75); color: #ffffff; font-size: 15px; cursor: pointer; }
+.planet-button.active { background: linear-gradient(45deg, #3344ff, #1a1e66); }
+.planet-detail { background: rgba(0,0,0,0.45); border-radius: 8px; padding: 14px; display: grid; grid-template-columns: 1.3fr 2fr; gap: 20px; backdrop-filter: blur(4px); }
+.planet-detail img { width: 100%; max-width: 260px; height: auto; border-radius: 10px; box-shadow: 0 0 14px rgba(0,0,0,0.8); margin: auto; display: block; }
+.planet-text h3 { margin: 0 0 6px; font-size: 24px; color: #ffffff; }
+.planet-text p { margin: 8px 0; font-size: 15px; color: #e1e3ff; }
+.badge { display: inline-block; padding: 3px 10px; font-size: 12px; border-radius: 12px; background: #3b4bbc; margin-top: 6px; color: #ffffff; }
+.audio-section { margin-top: 16px; background: rgba(0,0,0,0.45); padding: 12px; border-radius: 8px; backdrop-filter: blur(4px); }
+
+.course-content { display: none; animation: fadeIn 0.8s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.quiz-section { margin-top: 16px; background: rgba(0,0,0,0.45); padding: 25px; border-radius: 8px; text-align: center; }
+.quiz-btn { display: block; width: 100%; max-width: 400px; margin: 10px auto; padding: 12px; border-radius: 6px; border: 1px solid #5566ff; background: rgba(24,32,70,0.85); color: #ffffff; font-size: 15px; cursor: pointer; }
+.quiz-btn:hover { background: #3344ff; }
+.progress-text { font-size: 14px; color: #b9bcff; margin-bottom: 10px; }
+#result-display { display: none; text-align: center; padding: 20px; background: rgba(10,12,30,0.9); border-radius: 10px; border: 2px solid #3366ff; }
+.profile-card { background: rgba(0,0,0,0.6); padding: 25px; border-radius: 12px; border: 1px solid #4b5bd6; backdrop-filter: blur(10px); }
+.details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+.label { color: #b9bcff; font-size: 12px; text-transform: uppercase; }
+.value { font-size: 16px; color: #ffffff; }
+
+.view-page { display: none; }
+.view-active { display: block !important; }
+
+/* NEW FOOTER STYLE */
+#fixed-footer {
+  position: relative;
+  text-align: center;
+  padding: 40px 0 20px;
+  color: #ffffff;
+  background: none;
+  font-size: 14px;
+  display: none; /* Only shown in portal */
+  width: 100%;
+  clear: both;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div id="v-login" class="view-page view-active">
+    <div class="full-center">
+      <div class="auth-card">
+        <h2>Solar System Eclipse</h2>
+        <p><b>Login to access the interactive website and learn new things.</b></p>
+        <form id="loginForm">
+          <input type="text" id="l-user" class="auth-input" placeholder="Username" required />
+          <input type="password" id="l-pass" class="auth-input" placeholder="Password" required />
+          <button type="submit" class="auth-btn">Login</button>
+        </form>
+        <div class="link-btn" onclick="nav('v-register')">New user? Register here</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-register" class="view-page">
+    <div class="full-center">
+      <div class="auth-card"> 
+        <h2>New Registration</h2>
+        <p>Enter your details to register for Solar System Eclipse portal.</p>
+        <form id="regForm">
+          <input type="text" id="r-user" class="auth-input" placeholder="Username" required />
+          <input type="email" id="r-email" class="auth-input" placeholder="Email" required />
+          <input type="password" id="r-pass" class="auth-input" placeholder="Password (Min 6 chars)" required />
+          <div class="field-group">
+            <select id="r-gender" class="auth-select" style="flex: 1;" required>
+              <option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option>
+            </select>
+            <input type="date" id="r-dob" class="auth-input" style="flex: 1;" required />
+          </div>
+          <input type="text" id="r-father" class="auth-input" placeholder="Father's Name" required />
+          <input type="text" id="r-mother" class="auth-input" placeholder="Mother's Name" required />
+          <input type="text" id="r-pjob" class="auth-input" placeholder="Parent's Occupation" required />
+          <input type="tel" id="r-phone" class="auth-input" placeholder="Mobile Number (10 digits)" required />
+          <input type="text" id="r-country" class="auth-input" placeholder="Country" required />
+          <select id="r-edu" class="auth-select" required>
+            <option value="">Highest Education</option><option>School</option><option>Undergraduate</option><option>Postgraduate</option><option>Research</option>
+          </select>
+          <textarea id="r-addr" class="auth-textarea" placeholder="Full Address" required></textarea>
+          <button type="submit" class="auth-btn">Register</button>
+        </form>
+        <div class="link-btn" onclick="nav('v-login')">Back to Login</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-portal" class="view-page">
+    <header>
+      <div class="top-bar">
+        <div class="brand">Solar System Eclipse</div>
+        <div class="nav-links">
+          <button class="nav-btn active" id="b-intro" onclick="pNav('p-intro', this)">Introduction</button>
+          <button class="nav-btn" onclick="pNav('p-course', this)">Course Registration</button>
+          <button class="nav-btn" onclick="pNav('p-learning', this)">Learning</button>
+          <button class="nav-btn" onclick="pNav('p-assess', this)">Assessment</button>
+          <button class="nav-btn" onclick="pNav('p-profile', this)">Profile</button>
+          <button class="nav-btn" onclick="pNav('p-feedback', this)">Feedback</button>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div id="p-intro" class="p-sec">
+        <h1><u>Introduction to the Solar System and Eclipses</u></h1>
+        <p>The <strong>Solar System</strong> is a vast collection of celestial bodies bound together by gravity around our central star, the <strong>Sun</strong>. It includes eight major planets, their moons, dwarf planets like Pluto, countless asteroids, icy comets, and dust particles. The Sun is the largest object in the Solar System and provides the light and heat necessary to support life on Earth. Each planet has unique features:</p>
+        <ul>
+          <li><strong>Inner rocky planets</strong> like Mercury, Venus, Earth, and Mars are closer to the Sun and have solid surfaces.</li>
+          <li><strong>Outer gas and ice giants</strong> such as Jupiter, Saturn, Uranus, and Neptune are much larger and made mainly of gases and ices.</li>
+        </ul>
+        <p>Earth orbits the Sun at an average distance of about 150 million kilometers and completes one revolution in 365 days, creating our year. The planets all follow elliptical paths called <strong>orbits</strong>, each taking different times to complete a revolution. These differences in orbit time and distance give each planet its own unique environment and seasons.</p>
+        <p>An interesting natural phenomenon within the Solar System is an <strong>eclipse</strong>. An eclipse occurs when one celestial body moves into the shadow of another. On Earth, the most commonly observed eclipses involve the <strong>Sun</strong>, <strong>Earth</strong>, and <strong>Moon</strong>. A <strong>solar eclipse</strong> happens when the Moon passes directly between the Sun and Earth, temporarily blocking sunlight and casting a shadow on Earth’s surface. This alignment can produce different types of solar eclipses, including <em>total</em>, <em>partial</em>, and <em>annular</em>, depending on the position and distances of the Moon and Sun.</p>
+        <p>During a <strong>total solar eclipse</strong>, the Moon completely covers the Sun’s bright disk, making the sky dark for a few minutes as if it were twilight even during the day. In a <strong>partial solar eclipse</strong>, only part of the Sun is obscured, and in an <strong>annular solar eclipse</strong>, the Moon appears smaller than the Sun, leaving a bright ring of light visible around it.</p>
+        <p>Eclipses do not occur every month because the Moon’s orbit is tilted relative to Earth’s orbit around the Sun. Only when the three bodies align closely in a straight line do eclipses happen, making them rare and exciting events to observe.</p>
+      </div>
+
+      <div id="p-course" class="p-sec" style="display:none;">
+        <h2 class="section-title">Course Registration</h2>
+        <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+          <div class="form-card" style="flex: 1; min-width: 300px;">
+            <form id="courseForm">
+              <div class="form-row"><label class="form-label">Full Name</label><input id="fullName" class="form-input" required></div>
+              <div class="form-row"><label class="form-label">Email</label><input id="courseEmail" type="email" class="form-input" required></div>
+              <div class="form-row"><label class="form-label">Phone Number (optional)</label><input id="coursePhone" class="form-input"></div>
+              <div class="form-row"><label class="form-label">Select Course</label>
+                <select id="courseSelect" class="form-select" required>
+                  <option value="">-- Choose a course --</option>
+                  <option value="Basics">Solar System Basics</option>
+                  <option value="Eclipses">Eclipses and Shadows</option>
+                  <option value="Planets">Planets and Their Orbits</option>
+                </select>
+              </div>
+              <button type="submit" class="primary-btn">Register</button>
+            </form>
+            <div id="success-msg">Registration submitted successfully! Enjoy your course.</div>
+          </div>
+          <div style="flex: 1; min-width: 300px; text-align: center;">
+            <img src="slideshow1.jpg" alt="slideshow" style="width: 100%; max-width: 450px; border-radius: 10px; box-shadow: 0 0 15px rgba(51, 102, 255, 0.4);">
+          </div>
+        </div>
+      </div>
+
+      <div id="p-learning" class="p-sec" style="display:none;">
+
+        <div id="course-basics-content" class="course-content">
+            <h2 class="section-title">The Solar System Basics</h2>
+            <p class="section-text">
+                The Solar System is a gravitationally bound system consisting of a central star called the <strong>Sun</strong> and the objects that orbit it. It formed approximately <strong>4.6 billion years ago</strong> from the collapse of a giant interstellar molecular cloud.
+             </p>
+            
+            <div class="audio-section"><p><b>Solar System Sound</b></p><audio controls><source src="solar.mp3" type="audio/mpeg"></audio></div>
+             
+            <div class="image-section">
+                <img src="solarsystem.jpg" alt="Solar System" style="width:50%; height: 50%; max-width:500px; border-radius:10px; box-shadow:0 0 14px rgba(0,0,0,0.8); margin-top:20px;">
+            </div>
+
+            <h3 class="section-title">1. The Sun: Our Central Powerhouse</h3>
+            <p class="section-text">
+                The Sun is a nearly perfect sphere of hot plasma at the center of our system. It is the most vital member of the solar family.
+            </p>
+            <ul>
+                <li><strong>Mass:</strong> It accounts for <strong>99.86%</strong> of the Solar System's total mass, providing the gravity that holds all planets in place.</li>
+                <li><strong>Energy:</strong> Through nuclear fusion, it generates the light and heat required for all life on Earth.</li>
+                <li><strong>Distance:</strong> It is roughly 150 million kilometers away from Earth (1 AU).</li>
+            </ul>
+
+            <h3 class="section-title">2. The Inner Planets (Terrestrial Group)</h3>
+            <p class="section-text">These four planets are closest to the Sun, defined by solid rocky surfaces and high density.</p>
+            <ul>
+                <li><strong>Mercury:</strong> The smallest planet. It has a cratered surface and virtually no atmosphere.</li>
+                <li><strong>Venus:</strong> The <strong>hottest planet</strong> due to a thick atmosphere that creates a runaway greenhouse effect.</li>
+                <li><strong>Earth:</strong> Our home. The only planet known to have liquid water and a stable environment for life.</li>
+                <li><strong>Mars:</strong> The "Red Planet." It features the largest volcano in the solar system, <strong>Olympus Mons</strong>.</li>
+            </ul>
+
+            <h3 class="section-title">3. The Outer Planets (The Giant Group)</h3>
+            <p class="section-text">Located beyond the Asteroid Belt, these planets are massive and composed mostly of gases and ices.</p>
+            <ul>
+                <li><strong>Jupiter (Gas Giant):</strong> The largest planet, famous for its <strong>Great Red Spot</strong> storm.</li>
+                <li><strong>Saturn (Gas Giant):</strong> Famous for its spectacular <strong>ring system</strong> made of ice and rock.</li>
+                <li><strong>Uranus (Ice Giant):</strong> A cold planet that is unique because it <strong>rotates on its side</strong>.</li>
+                <li><strong>Neptune (Ice Giant):</strong> The most distant planet, whipped by supersonic winds.</li>
+            </ul>
+
+            <h3 class="section-title">4. Orbital Mechanics</h3>
+            <ul>
+                <li><strong>Orbit:</strong> Each planet travels around the Sun in an <strong>elliptical</strong> (oval-shaped) path.</li>
+                <li><strong>Rotation:</strong> The spinning of a planet on its axis (creates Day and Night).</li>
+                <li><strong>Revolution:</strong> The time taken to complete one full trip around the Sun (creates a Year).</li>
+            </ul>
+
+            <h3 class="section-title">5. Minor Celestial Bodies</h3>
+            <ul>
+                <li><strong>Asteroid Belt:</strong> A region of rocky fragments between Mars and Jupiter.</li>
+                <li><strong>Dwarf Planets:</strong> Round objects like <strong>Pluto</strong> that have not cleared their orbital path.</li>
+                <li><strong>Comets:</strong> Icy bodies that develop glowing tails when near the Sun's heat.</li>
+            </ul>
+        </div>
+
+        <div id="course-eclipses-content" class="course-content">
+            <h2 class="section-title">Eclipses and the Science of Shadows</h2>
+            <p class="section-text">
+                An eclipse is an astronomical event that occurs when one celestial body moves into the shadow of another. In our solar system, this phenomenon primarily involves the interaction between the <strong>Sun, Earth, and Moon</strong>.
+            </p>
+
+            <div class="audio-section"><p><b>Eclipse sound</b></p><audio controls><source src="eclipse.mp3" type="audio/mpeg"></audio></div>
+
+            <h3 class="section-title">1. The Nature of Shadows</h3>
+            <p class="section-text">
+                Shadows in space are not just simple dark areas; they are composed of three distinct regions based on how much light is blocked:
+            </p>
+            <ul>
+                <li><strong>Umbra:</strong> The innermost and darkest part of the shadow where the light source is completely blocked.</li>
+                <li><strong>Penumbra:</strong> The outer part of the shadow where the light source is only partially blocked.</li>
+                <li><strong>Antumbra:</strong> The area beyond the tip of the umbra where the blocking body appears smaller than the light source.</li>
+            </ul>
+
+            <h3 class="section-title">2. Solar Eclipses (Sun - Moon - Earth)</h3>
+            <p class="section-text">
+                A solar eclipse occurs when the <strong>Moon passes between the Sun and Earth</strong>. This alignment can only happen during a <strong>New Moon</strong>.
+            </p>
+            <ul>
+                <li><strong>Total Solar Eclipse:</strong> The Moon completely covers the Sun (occurs in the umbra).</li>
+                <li><strong>Partial Solar Eclipse:</strong> Only a part of the Sun is obscured (occurs in the penumbra).</li>
+                <li><strong>Annular Solar Eclipse:</strong> The Moon is too far away to cover the Sun completely, creating a "ring of fire."</li>
+            </ul>
+
+            <div style="display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 20px; flex-wrap: wrap;">
+                
+                <div class="video" style="margin-top: 20px; text-align: center;">
+                    <p><b>Solar Eclipse Animation</b></p>
+                    <video controls style="width: 100%;height: 50%; max-width: 300px; border-radius: 10px; box-shadow: 0 0 14px rgba(0,0,0,0.8);">
+                        <source src="solareclipse_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div style="flex: 1; max-width: 400px; text-align: center;">
+                    <img src="solareclipse_diagram.jpg" alt="Solar Eclipse Diagram" style="width: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                </div>
+
+                 <div style="flex: 1; max-width: 400px; text-align: center;">
+                    <img src="solareclipse.jpg" alt="Total Solar Eclipse" style="width: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                </div>
+
+            </div>
+
+            <h3 class="section-title">3. Lunar Eclipses (Sun - Earth - Moon)</h3>
+            <p class="section-text">
+                A lunar eclipse happens when the <strong>Earth passes between the Sun and the Moon</strong>, casting its massive shadow across the lunar surface. This occurs during a <strong>Full Moon</strong>.
+            </p>
+            <ul>
+                <li><strong>Total Lunar Eclipse:</strong> The Moon turns reddish as it passes through Earth's umbra.</li>
+                <li><strong>Partial Lunar Eclipse:</strong> Only a portion of the Moon enters Earth's umbra.</li>
+                <li><strong>Penumbral Eclipse:</strong> The Moon passes through Earth's faint outer shadow.</li>
+            </ul>
+            
+            <div style="display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 20px; flex-wrap: wrap;">
+                
+                <div class="video" style="margin-top: 20px; text-align: center;">
+                    <p><b>Lunar Eclipse Animation</b></p>
+                    <video controls style="width: 100%;height: 50%; max-width: 300px; border-radius: 10px; box-shadow: 0 0 14px rgba(0,0,0,0.8);">
+                        <source src="lunareclipse_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div style="flex: 1; max-width: 400px; text-align: center;">
+                    <img src="lunareclipse_diagram.jpg" alt="Lunar Eclipse Diagram" style="width: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                </div>
+
+                <div style="flex: 1; max-width: 400px; text-align: center;">
+                    <img src="lunareclipse.jpg" alt="Total Lunar Eclipse" style="width: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                </div>
+
+            </div>
+
+            <h3 class="section-title">4. The 5-Degree Tilt</h3>
+            <p class="section-text">
+                Eclipses do not happen every month because the Moon’s orbit is <strong>tilted by about 5 degrees</strong> relative to Earth's orbit around the Sun. Most of the time, the Moon's shadow misses the Earth, or the Earth's shadow misses the Moon.
+            </p>
+
+            <h3 class="section-title">5. Quick Comparison</h3>
+            <table style="width:100%; border-collapse: collapse; margin-top: 10px; color: white; background: rgba(0,0,0,0.3);">
+                <tr style="border-bottom: 1px solid #4b5bd6;">
+                    <th style="padding: 10px; text-align: left;">Type</th>
+                    <th style="padding: 10px; text-align: left;">Middle Body</th>
+                    <th style="padding: 10px; text-align: left;">Moon Phase</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">Solar</td>
+                    <td style="padding: 10px;">Moon</td>
+                    <td style="padding: 10px;">New Moon</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">Lunar</td>
+                    <td style="padding: 10px;">Earth</td>
+                    <td style="padding: 10px;">Full Moon</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="course-planets-content" class="course-content">
+          <h2 class="section-title">Planets and Their Orbits</h2>
+          <p class="section-text">Use the planet buttons to explore information. The highlighted planet changes automatically every 5 seconds.</p>
+          <div class="planet-layout">
+            <div class="planet-list" id="planetList"></div>
+            <div class="planet-detail" id="displayArea"></div>
+          </div>
+
+          <hr style="border: 1px solid rgba(75, 91, 214, 0.3); margin: 30px 0;">
+
+          <h3 class="section-title">1. The Shape of an Orbit (The Ellipse)</h3>
+          <p class="section-text">
+            Planets do not travel in perfect circles. Instead, they follow <strong>Elliptical orbits</strong>, which look like slightly flattened or stretched circles.
+          </p>
+          
+          <ul>
+            <li><strong>Eccentricity:</strong> This is the measurement of how "flat" or "oval" an orbit is. A perfect circle has an eccentricity of 0. Most planets have low eccentricity, meaning they are almost circular, while comets often have high eccentricity.</li>
+            <li><strong>Perihelion:</strong> This is the specific point in a planet's orbit where it is <strong>closest</strong> to the Sun. At this point, the planet travels at its maximum speed.</li>
+            <li><strong>Aphelion:</strong> This is the point where the planet is <strong>farthest</strong> from the Sun. At this point, the planet's orbital speed is at its slowest.</li>
+          </ul>
+
+          <h3 class="section-title">2. Kepler’s Laws of Planetary Motion</h3>
+          <p class="section-text">
+            In the early 1600s, astronomer Johannes Kepler established three fundamental laws that describe exactly how planets move through space:
+          </p>
+          <ul>
+            <li><strong>The Law of Ellipses:</strong> All planets move in elliptical orbits with the Sun located at one of the two "foci" (focus points) of the ellipse.</li>
+            <li><strong>The Law of Equal Areas:</strong> An imaginary line connecting a planet to the Sun sweeps out equal areas in equal amounts of time. This means planets accelerate as they approach the Sun and decelerate as they move away.</li>
+            
+            <li><strong>The Law of Harmonies:</strong> This mathematical law proves that the further a planet is from the Sun, the longer it takes to complete one full trip (its orbital period).</li>
+          </ul>
+
+          <h3 class="section-title">3. Orbital Speeds and Periods</h3>
+          <p class="section-text">
+            The distance from the Sun directly affects how fast a planet moves and how long its "year" lasts. Because gravity weakens with distance, the outer planets do not need to move as fast as the inner planets to stay in orbit.
+          </p>
+          <ul>
+            <li><strong>Mercury:</strong> Travels at 47.4 km/s and finishes a year in just 88 days.</li>
+            <li><strong>Earth:</strong> Travels at 29.8 km/s and finishes a year in 365.25 days.</li>
+            <li><strong>Jupiter:</strong> Travels at 13.1 km/s and takes 12 Earth years to orbit once.</li>
+            <li><strong>Neptune:</strong> Travels at only 5.4 km/s and takes 165 Earth years to complete a single orbit.</li>
+          </ul>
+
+          <h3 class="section-title">4. Axial Tilt and the Change of Seasons</h3>
+          <p class="section-text">
+            While orbiting the Sun, planets also spin on an internal line called an <strong>Axis</strong>. Most planets are "tilted" rather than standing straight up and down. This is known as <strong>Axial Tilt</strong>.
+          </p>
+          
+          <ul>
+            <li><strong>Earth’s Tilt:</strong> Earth is tilted at 23.5 degrees, which is why we experience different seasons as we move around the Sun.</li>
+            <li><strong>Uranus's Extreme Tilt:</strong> Uranus is tilted at 98 degrees. It essentially rolls around the Sun on its side, leading to extreme seasons that last 21 years each.</li>
+          </ul>
+
+          <h3 class="section-title">5. Minor Orbital Objects</h3>
+          <p class="section-text">
+            Orbits aren't just for planets. The solar system is filled with other objects following their own paths:
+          </p>
+          <ul>
+            <li><strong>Asteroids:</strong> Mostly found in the belt between Mars and Jupiter.</li>
+            <li><strong>Comets:</strong> These have highly "eccentric" orbits that take them from the frozen outer reaches of the system to very close to the Sun.</li>
+            <li><strong>Moons:</strong> These are "satellites" that orbit a planet rather than orbiting the Sun directly.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="p-assess" class="p-sec" style="display:none;">
+        <h2 class="section-title" id="assess-title">Assessment</h2>
+        <div id="quiz-area">
+          <div class="progress-text" id="progress">Question 1 of 12</div>
+          <div class="quiz-section"><p id="question-text" style="font-size: 18px;"></p><div id="options-container"></div></div>
+        </div>
+        
+        <div id="result-display">
+            <h2>Assessment Finished</h2>
+            <div id="final-score" style="font-size: 48px; color: #7cf57c;"></div>
+            <div id="feedback-advice" style="margin-bottom: 20px; color: #b9bcff;"></div>
+            
+            <div id="answers-review" style="text-align: left; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-bottom: 20px; max-height: 400px; overflow-y: auto; border: 1px solid #3344ff;">
+                <h3 style="color: #ffffff; border-bottom: 1px solid #3344ff; padding-bottom: 5px;">Review Your Answers:</h3>
+                <div id="review-list"></div>
+            </div>
+
+            <button class="quiz-btn" onclick="initQuiz()">Restart Assessment</button>
+        </div>
+      </div>
+
+      <div id="p-profile" class="p-sec" style="display:none;">
+        <h2 class="section-title">My Profile</h2>
+        <div class="profile-card">
+          <div class="details-grid">
+            <div class="info-item"><div class="label">Username</div><div id="d-user" class="value"></div></div>
+            <div class="info-item"><div class="label">Email Address</div><div id="d-email" class="value"></div></div>
+            <div class="info-item"><div class="label">Date of Birth</div><div id="d-dob" class="value"></div></div>
+            <div class="info-item"><div class="label">Gender</div><div id="d-gender" class="value"></div></div>
+            <div class="info-item"><div class="label">Mobile Number</div><div id="d-phone" class="value"></div></div>
+            <div class="info-item"><div class="label">Father's Name</div><div id="d-father" class="value"></div></div>
+            <div class="info-item"><div class="label">Mother's Name</div><div id="d-mother" class="value"></div></div>
+            <div class="info-item"><div class="label">Parent's Occupation</div><div id="d-pjob" class="value"></div></div>
+            <div class="info-item"><div class="label">Country</div><div id="d-country" class="value"></div></div>
+            <div class="info-item"><div class="label">Education</div><div id="d-edu" class="value"></div></div>
+            <div class="info-item full-width"><div class="label">Residential Address</div><div id="d-addr" class="value"></div></div>
+          </div>
+          <div style="margin-top: 30px; border-top: 1px solid #4b5bd6; padding-top: 20px;">
+              <h3 style="color: #e6e6ff;">Assessment Results</h3>
+              <div id="marks-display" style="font-size: 14px; color: #ffffff;">No results yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="p-feedback" class="p-sec" style="display:none;">
+        <h2 class="section-title">Feedback & Contact Us</h2>
+            <p class="section-text">
+                Please share your suggestions or doubts using this form. Your message
+                will be sent securely to the support team for review.
+            </p>
+
+        <form action="https://formspree.io/f/xeoyrjjd" method="POST" class="form-card">
+          <div class="form-row"><label class="form-label">Full Name</label><input id="fb-n" name="name" class="form-input" required></div>
+          <div class="form-row"><label class="form-label">Email Address</label><input id="fb-e" name="email" type="email" class="form-input" required></div>
+          <div class="form-row"><label class="form-label">How would you rate the Course Content?</label><select name="rating" class="form-select"><option>Excellent</option><option>Good</option><option>Average</option><option>Needs Improvement</option></select></div>
+          <div class="form-row">
+            <label class="form-label">Which course did you find most helpful?</label>
+            <select name="helpful_course" class="form-select">
+              <option value="">-- Select a course --</option>
+              <option value="All">All Courses</option>
+              <option value="Basics">Solar System Basics</option>
+              <option value="Eclipses">Eclipses and Shadows</option>
+              <option value="Planets">Planets and Their Orbits</option>
+            </select>
+          </div>
+          <div class="form-row"><label class="form-label">Feedback / Suggestions for the Website</label><textarea name="message" class="form-textarea" placeholder="Share your thoughts or ask a question..." required></textarea></div>
+          <button type="submit" class="primary-btn">Send Feedback</button>
+        </form>
+      </div>
+
+      <footer id="fixed-footer">Made by J Jaya Dhanush &copy;</footer>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// --- COOKIE HELPERS ---
+function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+    let nameEq = name + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(nameEq) == 0) return c.substring(nameEq.length, c.length);
+    }
+    return "";
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;';
+}
+
+// --- CHECK LOGIN ON LOAD ---
+window.onload = function() {
+    const loggedInUser = getCookie("loggedInUser");
+    if (loggedInUser) {
+        nav('v-portal');
+        pNav('p-intro', document.getElementById('b-intro'));
+        document.getElementById('fixed-footer').style.display = 'block';
+    }
+};
+
+// --- NAVIGATION ---
+function nav(id) {
+  document.querySelectorAll('.view-page').forEach(v => v.classList.remove('view-active'));
+  document.getElementById(id).classList.add('view-active');
+
+  // Toggle footer visibility: only show in portal
+  if (id === 'v-portal') {
+    document.getElementById('fixed-footer').style.display = 'block';
+  } else {
+    document.getElementById('fixed-footer').style.display = 'none';
+  }
+}
+
+function pNav(id, btn) {
+  // --- STOP MEDIA ON PAGE CHANGE ---
+  document.querySelectorAll('audio, video').forEach(media => {
+    media.pause();
+    media.currentTime = 0;
+  });
+
+  document.querySelectorAll('.p-sec').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).style.display = 'block';
+  btn.classList.add('active');
+
+  if(id==='p-profile') loadProf();
+  if(id==='p-learning') loadLearn();
+  if(id==='p-assess') initQuiz();
+}
+
+// --- AUTH LOGIC ---
+document.getElementById('loginForm').onsubmit = function(e) {
+  e.preventDefault();
+  const userInput = document.getElementById('l-user').value;
+  const passInput = document.getElementById('l-pass').value;
+  const savedData = JSON.parse(localStorage.getItem('uProfile'));
+
+  if(savedData && userInput === savedData.username && passInput === savedData.password) {
+    setCookie("loggedInUser", userInput, 7); 
+    nav('v-portal'); pNav('p-intro', document.getElementById('b-intro'));
+  } else { alert("Incorrect username or password!"); }
+};
+
+function logout() {
+    deleteCookie("loggedInUser");
+    location.reload();
+}
+
+document.getElementById('regForm').onsubmit = function(e) {
+  e.preventDefault();
+
+  // --- REGULAR EXPRESSION VALIDATION ---
+  const emailVal = document.getElementById('r-email').value;
+  const phoneVal = document.getElementById('r-phone').value;
+  const passVal = document.getElementById('r-pass').value;
+
+  // Regex Patterns
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  const phoneRegex = /^[0-9]{10}$/; // Exactly 10 digits
+  const passRegex = /^.{6,}$/; // Minimum 6 characters
+
+  if (!emailRegex.test(emailVal)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+  if (!phoneRegex.test(phoneVal)) {
+    alert("Please enter a valid 10-digit mobile number.");
+    return;
+  }
+  if (!passRegex.test(passVal)) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+
+  const profile = {
+    username: document.getElementById('r-user').value,
+    email: emailVal,
+    password: passVal,
+    gender: document.getElementById('r-gender').value,
+    dob: document.getElementById('r-dob').value,
+    fatherName: document.getElementById('r-father').value,
+    motherName: document.getElementById('r-mother').value,
+    parentOccupation: document.getElementById('r-pjob').value,
+    phone: phoneVal,
+    country: document.getElementById('r-country').value,
+    education: document.getElementById('r-edu').value,
+    address: document.getElementById('r-addr').value
+  };
+  localStorage.setItem('uProfile', JSON.stringify(profile));
+  alert("Account created successfully!"); nav('v-login');
+};
+
+document.getElementById('courseForm').onsubmit = function(e) {
+  e.preventDefault(); localStorage.setItem('uCourse', document.getElementById('courseSelect').value); document.getElementById('success-msg').style.display = "block";
+};
+
+// --- PROFILE LOADING ---
+function loadProf() {
+  const d = JSON.parse(localStorage.getItem('uProfile'));
+  if(d) {
+    document.getElementById('d-user').innerText = d.username;
+    document.getElementById('d-email').innerText = d.email;
+    document.getElementById('d-dob').innerText = d.dob;
+    document.getElementById('d-gender').innerText = d.gender;
+    document.getElementById('d-phone').innerText = d.phone;
+    document.getElementById('d-father').innerText = d.fatherName;
+    document.getElementById('d-mother').innerText = d.motherName;
+    document.getElementById('d-pjob').innerText = d.parentOccupation;
+    document.getElementById('d-country').innerText = d.country;
+    document.getElementById('d-edu').innerText = d.education;
+    document.getElementById('d-addr').innerText = d.address;
+    
+    const basicsScore = getCookie("score_Basics");
+    const eclipseScore = getCookie("score_Eclipses");
+    const planetsScore = getCookie("score_Planets");
+    let scoresHTML = "";
+    if(basicsScore) scoresHTML += `<p>Solar System Basics: <b>${basicsScore}/12</b></p>`;
+    if(eclipseScore) scoresHTML += `<p>Eclipses and Shadows: <b>${eclipseScore}/12</b></p>`;
+    if(planetsScore) scoresHTML += `<p>Planets and Their Orbits: <b>${planetsScore}/12</b></p>`;
+    document.getElementById('marks-display').innerHTML = scoresHTML || "No assessments completed yet.";
+  }
+}
+
+// --- LEARNING LOADER ---
+function loadLearn() {
+  const c = localStorage.getItem('uCourse');
+  document.querySelectorAll('.course-content').forEach(x => x.style.display = 'none');
+  if(c==="Basics") document.getElementById('course-basics-content').style.display='block';
+  else if(c==="Eclipses") document.getElementById('course-eclipses-content').style.display='block';
+  else if(c==="Planets") { document.getElementById('course-planets-content').style.display='block'; initPlanetSlides(); }
+}
+
+// --- PLANET SLIDESHOW ---
+const planets = [
+  { name: "Mercury", img: "mercury.jpg", desc: "Smallest planet, closest to the Sun. Extreme temperatures.", orbit: "88 days", type: "Rocky" },
+  { name: "Venus", img: "venus.jpg", desc: "Hottest planet due to greenhouse effect.", orbit: "225 days", type: "Rocky" },
+  { name: "Earth", img: "earth.jpg", desc: "Only planet with liquid water and life.", orbit: "365 days", type: "Rocky" },
+  { name: "Mars", img: "mars.jpg", desc: "The Red Planet. Home to Olympus Mons.", orbit: "687 days", type: "Rocky" },
+  { name: "Jupiter", img: "jupiter.jpg", desc: "Largest planet, gas giant with a Great Red Spot.", orbit: "12 years", type: "Gas Giant" },
+  { name: "Saturn", img: "saturn.jpg", desc: "Famous for its ring system.", orbit: "29 years", type: "Gas Giant" },
+  { name: "Uranus", img: "uranus.jpg", desc: "Ice giant that rotates on its side.", orbit: "84 years", type: "Ice Giant" },
+  { name: "Neptune", img: "neptune.jpg", desc: "Distant ice giant with supersonic winds.", orbit: "165 years", type: "Ice Giant" }
+];
+let curP = 2, pInt;
+function initPlanetSlides() {
+  const list = document.getElementById('planetList'); list.innerHTML = "";
+  planets.forEach((p, i) => { const b = document.createElement('button'); b.className = `planet-button ${i === curP ? 'active' : ''}`; b.innerText = p.name; b.onclick = () => { curP = i; upP(); clearInterval(pInt); startPT(); }; list.appendChild(b); });
+  upP(); startPT();
+}
+function upP() {
+  const p = planets[curP], btns = document.querySelectorAll('.planet-button');
+  btns.forEach((b, i) => b.classList.toggle('active', i === curP));
+  document.getElementById('displayArea').innerHTML = `<img src="${p.img}"><div class="planet-text"><h3>${p.name}</h3><p>${p.desc}</p><p><strong>Orbit:</strong> ${p.orbit}</p><span class="badge">${p.type}</span></div>`;
+}
+function startPT() { pInt = setInterval(() => { curP = (curP + 1) % planets.length; upP(); }, 5000); }
+
+// --- QUIZ DATA ---
+const quizData = {
+  "Basics": [
+    { q: "What is the primary source of energy for the Solar System?", a: "The Sun", o: ["The Sun", "Jupiter", "Earth's Core"] },
+    { q: "The Sun contains approximately what percentage of the total mass?", a: "99.8%", o: ["50%", "99.8%", "10%"] },
+    { q: "What state of matter is the Sun?", a: "Plasma", o: ["Gas", "Liquid", "Plasma"] },
+    { q: "The Solar System formed roughly how long ago?", a: "4.6 Billion Years", o: ["1 Billion Years", "4.6 Billion Years", "10 Billion"] },
+    { q: "Which is the smallest planet?", a: "Mercury", o: ["Mars", "Mercury", "Pluto"] },
+    { q: "What is the center of our Solar System?", a: "The Sun", o: ["Earth", "The Sun", "The Milky Way"] },
+    { q: "Which planet is known as the Red Planet?", a: "Mars", o: ["Venus", "Mars", "Jupiter"] },
+    { q: "What is the largest planet in our system?", a: "Jupiter", o: ["Saturn", "Jupiter", "Neptune"] },
+    { q: "How many major planets are there?", a: "8", o: ["7", "8", "9"] },
+    { q: "Which planet is famous for its rings?", a: "Saturn", o: ["Uranus", "Saturn", "Jupiter"] },
+    { q: "What force keeps planets in orbit?", a: "Gravity", o: ["Magnetism", "Gravity", "Friction"] },
+    { q: "Is the Sun a planet or a star?", a: "Star", o: ["Planet", "Star", "Comet"] }
+  ],
+  "Eclipses": [
+    { q: "What is the darkest part of a shadow called?", a: "Umbra", o: ["Penumbra", "Umbra", "Antumbra"] },
+    { q: "A solar eclipse occurs during which Moon phase?", a: "New Moon", o: ["Full Moon", "New Moon", "First Quarter"] },
+    { q: "A lunar eclipse occurs during which Moon phase?", a: "Full Moon", o: ["Full Moon", "New Moon", "Waning Gibbous"] },
+    { q: "What is the 'Ring of Fire' eclipse called?", a: "Annular", o: ["Total", "Partial", "Annular"] },
+    { q: "Why don't eclipses happen every month?", a: "5-degree tilt", o: ["Moon is too small", "5-degree tilt", "Earth's rotation"] },
+    { q: "In a solar eclipse, what is in the middle?", a: "Moon", o: ["Earth", "Moon", "Sun"] },
+    { q: "In a lunar eclipse, what is in the middle?", a: "Earth", o: ["Earth", "Moon", "Sun"] },
+    { q: "What is the outer part of the shadow called?", a: "Penumbra", o: ["Umbra", "Penumbra", "Core"] },
+    { q: "How many types of Solar Eclipses are there?", a: "3", o: ["2", "3", "5"] },
+    { q: "The Moon turns what color during a total lunar eclipse?", a: "Reddish", o: ["Blue", "Reddish", "Black"] },
+    { q: "Which eclipse is safe to watch with the naked eye?", a: "Lunar", o: ["Solar", "Lunar", "Neither"] },
+    { q: "What creates the shadow during a solar eclipse?", a: "The Moon", o: ["The Earth", "The Sun", "The Moon"] }
+  ],
+  "Planets": [
+    { q: "Which planet rotates on its side?", a: "Uranus", o: ["Neptune", "Uranus", "Saturn"] },
+    { q: "What is the shape of a planet's orbit?", a: "Ellipse", o: ["Circle", "Ellipse", "Square"] },
+    { q: "Point in orbit closest to the Sun is called?", a: "Perihelion", o: ["Aphelion", "Perihelion", "Equinox"] },
+    { q: "Point in orbit farthest from the Sun is called?", a: "Aphelion", o: ["Aphelion", "Perihelion", "Solstice"] },
+    { q: "Which law states planets sweep equal areas in equal time?", a: "Kepler's 2nd Law", o: ["Newton's Law", "Kepler's 2nd Law", "Kepler's 1st Law"] },
+    { q: "Which planet has the fastest orbital speed?", a: "Mercury", o: ["Earth", "Jupiter", "Mercury"] },
+    { q: "Which planet has the longest year?", a: "Neptune", o: ["Neptune", "Uranus", "Saturn"] },
+    { q: "What is Earth's axial tilt in degrees?", a: "23.5", o: ["23.5", "98", "0"] },
+    { q: "Which planet is the hottest?", a: "Venus", o: ["Mercury", "Venus", "Mars"] },
+    { q: "What is the measurement of how 'flat' an orbit is?", a: "Eccentricity", o: ["Tilt", "Gravity", "Eccentricity"] },
+    { q: "Which planet was found by math before observation?", a: "Neptune", o: ["Neptune", "Pluto", "Uranus"] },
+    { q: "The 'Great Red Spot' is on which planet?", a: "Jupiter", o: ["Mars", "Jupiter", "Saturn"] }
+  ]
+};
+
+let currentCourseQuestions = [];
+let userAnswers = [];
+let qI = 0, qS = 0;
+
+function initQuiz() {
+  const selectedCourse = localStorage.getItem('uCourse');
+  if (!selectedCourse || !quizData[selectedCourse]) {
+    alert("Please register for a course first!");
+    pNav('p-course', document.querySelector('.nav-links button:nth-child(2)'));
+    return;
+  }
+  currentCourseQuestions = quizData[selectedCourse];
+  qI = 0; qS = 0; userAnswers = [];
+  document.getElementById('quiz-area').style.display = 'block'; 
+  document.getElementById('result-display').style.display = 'none'; 
+  document.getElementById('assess-title').innerText = `Assessment: ${selectedCourse}`;
+  showQ();
+}
+
+function showQ() {
+  const data = currentCourseQuestions[qI]; 
+  document.getElementById('progress').innerText = `Question ${qI + 1} of 12`; 
+  document.getElementById('question-text').innerText = data.q;
+  const container = document.getElementById('options-container'); 
+  container.innerHTML = "";
+  let options = [...data.o].sort(() => Math.random() - 0.5);
+  options.forEach(opt => {
+    const btn = document.createElement('button'); 
+    btn.className = "quiz-btn"; btn.innerText = opt;
+    btn.onclick = () => { 
+      userAnswers.push(opt); if(opt === data.a) qS++; 
+      qI++; if(qI < 12) showQ(); else finishQ(); 
+    }; 
+    container.appendChild(btn);
+  });
+}
+
+function finishQ() {
+  document.getElementById('quiz-area').style.display = 'none'; 
+  document.getElementById('result-display').style.display = 'block'; 
+  document.getElementById('final-score').innerText = `${qS} / 12`;
+  
+  const currentCourse = localStorage.getItem('uCourse');
+  setCookie(`score_${currentCourse}`, qS, 30);
+
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = ""; 
+  currentCourseQuestions.forEach((item, index) => {
+    const selected = userAnswers[index];
+    const isCorrect = (selected === item.a);
+    const div = document.createElement('div');
+    div.style.cssText = "margin-bottom: 15px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.05);";
+    div.style.borderLeft = isCorrect ? "5px solid #7cf57c" : "5px solid #ff4444";
+    div.innerHTML = `<p style="margin: 0;">${index + 1}. ${item.q}</p>
+      <p style="margin: 8px 0 0; color: ${isCorrect ? '#7cf57c' : '#ff4444'};">Choice: ${selected} ${isCorrect ? '✔' : '✘'}</p>
+      ${!isCorrect ? `<p style="margin: 4px 0 0; color: #7cf57c;">Answer: ${item.a}</p>` : ''}`;
+    reviewList.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
